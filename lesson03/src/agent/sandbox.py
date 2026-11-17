@@ -65,7 +65,8 @@ def run_python(code: str, timeout: float = 5) -> dict:
     preexec = None
     if sys.platform != "win32":
         def preexec():
-            limit_resources(int(timeout) + 1)
+            # Лимит CPU с запасом: основной ограничитель — таймаут по часам.
+            limit_resources(2 * int(timeout) + 1)
 
     with tempfile.TemporaryDirectory(prefix="agent_sandbox_") as workdir:
         try:
@@ -85,6 +86,13 @@ def run_python(code: str, timeout: float = 5) -> dict:
                 "stdout": _truncate(_as_text(e.stdout)),
                 "stderr": f"Превышен лимит времени {timeout} с, процесс остановлен",
             }
+    if proc.returncode == -getattr(signal, "SIGXCPU", 0):  # ОС остановила за лимит CPU
+        return {
+            "timed_out": True,
+            "returncode": proc.returncode,
+            "stdout": _truncate(proc.stdout),
+            "stderr": "Превышен лимит процессорного времени, процесс остановлен",
+        }
     return {
         "timed_out": False,
         "returncode": proc.returncode,
