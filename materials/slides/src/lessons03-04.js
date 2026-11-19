@@ -175,7 +175,7 @@ async function demoSlide(title, steps, notes) {
   steps.forEach((st, i) => {
     text(s, String(i + 1), { x: 0.6, y, w: 0.5, h: 0.5, fontSize: 24, bold: true, color: C.accent1 });
     text(s, st[0], { x: 1.2, y, w: 11.4, h: 0.45, fontSize: 18, bold: true, color: C.background1 });
-    text(s, st[1], { x: 1.2, y: y + 0.45, w: 11.4, h: h - 0.55, fontSize: 14, fontFace: CODE_FONT,
+    text(s, st[1], { x: 1.2, y: y + 0.45, w: 11.4, h: h - 0.55, fontSize: 12, fontFace: CODE_FONT,
       color: C.background2 });
     y += h;
   });
@@ -328,9 +328,9 @@ async function demoSlide(title, steps, notes) {
 
   // Демо 1
   await demoSlide("Демо: ломаем lesson02", [
-    ["Выход из eval", "cd lesson02\nuv run python -c \"from agent.tools.eval_tool import python_eval; print(python_eval(...))\""],
-    ["Та же дыра в z3_check и SymPy", "tools.call('z3_check', ...)  →  488\ntools.call('sympy_simplify', ...)  →  488"],
-    ["Зависание", "python_eval('sum(range(10**12))')   # не возвращается"],
+    ["Выход из eval (из папки lesson02)", "uv run python -c \"from agent.tools.eval_tool import python_eval; print(python_eval(\\\"[c.__name__ for c in ().__class__.__base__.__subclasses__() if c.__name__ == 'Popen']\\\"))\""],
+    ["Та же дыра в z3_check и SymPy", "uv run python -c \"import json; from agent import tools; print(tools.call('z3_check', json.dumps({'variables': {'x': 'Int'}, 'constraints': ['x == ().__class__.__base__.__subclasses__().__len__()']})))\"\nuv run python -c \"import json; from agent import tools; print(tools.call('sympy_simplify', json.dumps({'expression': '().__class__.__base__.__subclasses__().__len__()'})))\""],
+    ["Зависание", "uv run python -c \"from agent.tools.eval_tool import python_eval; python_eval('sum(range(10**12))')\"   # Ctrl+C"],
   ], "Все три сценария воспроизводятся одной командой без модели (см. lesson03_plan.md, пункт 1). " +
     "Ожидаемые результаты: ['Popen'], 488, зависание. Модель на прямую просьбу обычно отказывается — поэтому без неё.");
 
@@ -552,7 +552,7 @@ async function demoSlide(title, steps, notes) {
     ["Скрипт с подтверждением", "cd lesson03 && uv run agent -v\n«Сколько шестизначных чисел, у которых сумма первых трёх цифр равна сумме последних трёх? Проверь перебором скриптом.» → y → 50412"],
     ["Отказ", "Тот же вопрос → N → модель переходит на python_eval → 50412"],
     ["Режимы", "uv run agent --mode auto   — без вопроса\nuv run agent --mode strict — отказ, модель обходится без python_run"],
-    ["Таймаут", "uv run python -c \"from agent import tools; print(tools.call('python_eval', ...sum(range(10**12))...))\"  → TimeoutError через 5 с"],
+    ["Таймаут: TimeoutError через 5 с", "uv run python -c \"from agent import tools; print(tools.call('python_eval', '{\\\"expression\\\": \\\"sum(range(10**12))\\\"}'))\""],
   ], "Все сценарии проверены с настоящей моделью. Эксплойт показывать тестом: uv run --group dev pytest -k denied -v — " +
     "модели сами отказываются вызывать __subclasses__. Если пишете свой скрипт с run_turn — нужен if __name__ == '__main__'.");
 
