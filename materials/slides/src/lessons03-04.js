@@ -1,4 +1,4 @@
-// Генератор презентации «Занятия 3–4. Безопасность и состояние агента».
+// Генератор презентации «Безопасность и состояние агента».
 // Запуск: NODE_PATH=<папка с node_modules: pptxgenjs, react-icons, react, react-dom, sharp> \
 //         node materials/slides/src/lessons03-04.js
 // Результат: materials/slides/lessons03-04_security_and_bank.pptx
@@ -38,7 +38,7 @@ const CODE_FONT = "Courier New";
 
 const pres = new pptxgen();
 pres.layout = "LAYOUT_WIDE"; // 13.333" × 7.5"
-pres.title = "Занятия 3–4. Безопасность и состояние агента";
+pres.title = "Безопасность и состояние агента";
 pres.author = "Курс «ИИ-агенты с нуля»";
 pres.theme = { headFontFace: THEME.headFontFace, bodyFontFace: THEME.bodyFontFace };
 const C = pres.SchemeColor;
@@ -189,7 +189,7 @@ async function demoSlide(title, steps, notes) {
 
   // 1. Титул
   {
-    const s = slide("TITLE_DARK", "Занятия 3–4. Безопасность и состояние агента");
+    const s = slide("TITLE_DARK", "Безопасность и состояние агента");
     s.addText("Песочница, разрешения, банк задач", { placeholder: "body" });
     await trustStrip(s, 5.1, [["модель", ""], ["harness", ""], ["человек", ""]], true);
     text(s, "Референс: Learn Claude Code — s03 Permission, s12 Task System", {
